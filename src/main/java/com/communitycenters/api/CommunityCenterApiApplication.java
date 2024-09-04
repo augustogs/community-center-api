@@ -1,4 +1,4 @@
-package com.communitycenters.community_center_api;
+package com.communitycenters.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
