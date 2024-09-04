@@ -13,6 +13,9 @@ public class CommunityCenterService {
     @Autowired
     private CommunityCenterRepository communityCenterRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Transactional
     public CommunityCenter addCommunityCenter(CommunityCenterDTO center) {
         if (center.getOccupancy() > center.getCapacity()) {
@@ -23,4 +26,22 @@ public class CommunityCenterService {
                                                  center.getCapacity(), center.getOccupancy(), center.getResources());
         return communityCenterRepository.save(cc);
     }
+
+    @Transactional
+    public CommunityCenter updateOccupancy(String centerId, int occupancy) {
+        CommunityCenter communityCenter = communityCenterRepository.findById(centerId)
+                .orElseThrow(() -> new IllegalArgumentException("Community Center not found"));
+
+        if (occupancy > communityCenter.getCapacity()) {
+            throw new IllegalArgumentException("Occupancy cannot exceed capacity");
+        }
+
+        communityCenter.setOccupancy(occupancy);
+
+        if (occupancy == communityCenter.getCapacity()) {
+            notificationService.sendCapacityReachedNotification(communityCenter);
+        }
+        return communityCenterRepository.save(communityCenter);
+    }
+
 }

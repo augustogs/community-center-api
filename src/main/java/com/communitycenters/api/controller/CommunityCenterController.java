@@ -24,5 +24,16 @@ public class CommunityCenterController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("/{centerId}/occupancy")
+    public ResponseEntity<?> updateOccupancy(@PathVariable String centerId, @RequestParam int occupancy) {
+        try {
+            CommunityCenter updatedCenter = communityCenterService.updateOccupancy(centerId, occupancy);
+            return new ResponseEntity<>(updatedCenter, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
 
