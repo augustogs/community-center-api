@@ -1,8 +1,9 @@
 package com.communitycenters.api.dto;
 
-import com.communitycenters.api.model.Resource;
+import com.communitycenters.api.model.ResourceType;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class CommunityCenterDTO {
 
@@ -11,7 +12,7 @@ public class CommunityCenterDTO {
     private String location;
     private int capacity;
     private int occupancy;
-    private List<Resource> resources;
+    private Map<ResourceType, Integer> resources;
 
     public String getName() {
         return this.name;
@@ -53,11 +54,8 @@ public class CommunityCenterDTO {
         this.occupancy = occupancy;
     }
 
-    public List<Resource> getResources() {
+    public Map<ResourceType, Integer> getResources() {
         return this.resources;
     }
 
-    public void setResources(List<Resource> resources) {
-        this.resources = resources;
-    }
 }

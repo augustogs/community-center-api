@@ -3,9 +3,9 @@ package com.communitycenters.api.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Document(collection = "community_centers")
@@ -19,9 +19,9 @@ public class CommunityCenter {
     private String location;
     private int capacity;
     private int occupancy;
-    private List<Resource> resources;
+    private Map<ResourceType, Integer> resources;
 
-    public CommunityCenter(String name, String address, String location, int capacity, int occupancy, List<Resource> resources) {
+    public CommunityCenter(String name, String address, String location, int capacity, int occupancy, Map<ResourceType, Integer> resources) {
         this.name = name;
         this.address = address;
         this.location = location;
@@ -62,7 +62,7 @@ public class CommunityCenter {
         this.capacity = capacity;
     }
 
-    public int getOcuppancy() {
+    public int getOccupancy() {
         return this.occupancy;
     }
 
@@ -70,7 +70,7 @@ public class CommunityCenter {
         this.occupancy = occupancy;
     }
 
-    public List<Resource> getResources() {
+    public Map<ResourceType, Integer> getResources() {
         return this.resources;
     }
 
