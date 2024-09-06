@@ -2,6 +2,7 @@ package com.communitycenters.api.controller;
 
 import com.communitycenters.api.dto.CommunityCenterDTO;
 import com.communitycenters.api.model.CommunityCenter;
+import com.communitycenters.api.model.ResourceType;
 import com.communitycenters.api.service.CommunityCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/community-centers")
@@ -40,6 +42,11 @@ public class CommunityCenterController {
     @GetMapping("/high-occupancy")
     public List<CommunityCenter> getCommunityCentersWithHighOccupancy() {
         return communityCenterService.findCentersWithHighOccupancy();
+    }
+
+    @GetMapping("/average-resources")
+    public List<Map> getAverageResourceQuantity() {
+        return communityCenterService.getAverageResourceQuantity();
     }
 
 }

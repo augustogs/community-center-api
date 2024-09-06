@@ -4,18 +4,18 @@ import com.communitycenters.api.dto.CommunityCenterDTO;
 import com.communitycenters.api.model.CommunityCenter;
 import com.communitycenters.api.repository.CommunityCenterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommunityCenterService {
@@ -36,7 +36,7 @@ public class CommunityCenterService {
         }
 
         CommunityCenter cc = new CommunityCenter(center.getName(), center.getAddress(), center.getLocation(),
-                                                 center.getCapacity(), center.getOccupancy(), center.getResources());
+                center.getCapacity(), center.getOccupancy(), center.getResources());
         return communityCenterRepository.save(cc);
     }
 
@@ -71,4 +71,23 @@ public class CommunityCenterService {
         return results.getMappedResults();
     }
 
+    public List<Map> getAverageResourceQuantity() {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.project()
+                        .andExpression("{$objectToArray: '$resources'}").as("resourcesArray"),
+                Aggregation.unwind("resourcesArray"),
+                Aggregation.group("resourcesArray.k")
+                        .sum("resourcesArray.v").as("totalQuantity")
+                        .count().as("totalCenters"),
+                Aggregation.project()
+                        .and("_id").as("resourceType")
+                        .and("totalQuantity").divide("totalCenters").as("avegereQuantity")
+                        .andExclude("_id")
+        );
+
+        AggregationResults<Map> results = mongoTemplate.aggregate(aggregation, "community_centers", Map.class);
+        return results.getMappedResults();
+    }
+
 }
+
