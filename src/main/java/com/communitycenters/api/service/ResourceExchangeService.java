@@ -32,16 +32,83 @@ public class ResourceExchangeService {
         Map<ResourceType, Integer> resourcesOffered = resourceExchangeDTO.getResourcesOffered();
         Map<ResourceType, Integer> resourcesRequested = resourceExchangeDTO.getResourcesRequested();
 
+        validateExchangeConditions(centerFrom, centerTo, resourcesOffered, resourcesRequested);
+        valideteResourceExchange(centerFrom, centerTo, resourcesOffered, resourcesRequested);
+
+        exchangeResources(centerFrom, centerTo, resourcesOffered, resourcesRequested);
+
+        communityCenterRepository.save(centerFrom);
+        communityCenterRepository.save((centerTo));
+
+        ResourceExchange resourceExchange = new ResourceExchange(
+                resourceExchangeDTO.getCenterFromId(),
+                resourceExchangeDTO.getCenterToId(),
+                resourceExchangeDTO.getResourcesOffered(),
+                resourceExchangeDTO.getResourcesRequested()
+        );
+        resourceExchangeRepository.save(resourceExchange);
+        return resourceExchange;
+    }
+
+    // Private methods
+    private double calcOccupancyPercent(CommunityCenter communityCenter) {
+        return ((double) communityCenter.getOccupancy() / communityCenter.getCapacity() * 100);
+    }
+
+    private void validateExchangeConditions(CommunityCenter centerFrom, CommunityCenter centerTo, Map<ResourceType, Integer> resourcesOffered, Map<ResourceType, Integer> resourcesRequested) {
         if (calcOccupancyPercent(centerFrom) < 90.0 && calcOccupancyPercent(centerTo) < 90.0) {
             int pointsResourcesOffered = calcPointsExchange(resourcesOffered.keySet());
             int pointsResourcesRequested = calcPointsExchange(resourcesRequested.keySet());
 
             if (pointsResourcesOffered != pointsResourcesRequested) {
-                throw new IllegalArgumentException("Exchange not allowed, points must be equal");
+                throw new IllegalArgumentException("Exchange not allowed, points must be equal!");
+            }
+        }
+    }
+
+    private int calcPointsExchange(Set<ResourceType> resources) {
+        int points = 0;
+        for (ResourceType resourceType: resources) {
+            points += resourceType.getPoints();
+        }
+        return points;
+    }
+
+
+    private void valideteResourceExchange(CommunityCenter centerFrom, CommunityCenter centerTo, Map<ResourceType, Integer> resourcesOffered, Map<ResourceType, Integer> resourcesRequested) {
+
+        for (ResourceType resourceType : resourcesOffered.keySet()) {
+            if (centerFrom.getResources().containsKey(resourceType)) {
+                int availableQuantity = centerFrom.getResources().get(resourceType);
+                int offeredQuantity =  resourcesOffered.get(resourceType);
+                if (availableQuantity < offeredQuantity)  {
+                    throw new IllegalArgumentException("Center 'from' has insufficient quantity of resource: "
+                                                        + resourceType + ". Avaliable: " + availableQuantity
+                                                        + ", offered: " + offeredQuantity
+                                                        );
+                }
+            } else {
+                throw new IllegalArgumentException("Center 'from' does not have resource" + resourceType);
             }
         }
 
-        //implement check values is not < 0
+        for (ResourceType resourceType : resourcesRequested.keySet()) {
+            if (centerTo.getResources().containsKey(resourceType)) {
+                int availableQuantity = centerTo.getResources().get(resourceType);
+                int offeredQuantity =  resourcesRequested.get(resourceType);
+                if (availableQuantity < offeredQuantity)  {
+                    throw new IllegalArgumentException("Center 'to' has insufficient quantity of resource: "
+                            + resourceType + ". Avaliable: " + availableQuantity
+                            + ", offered: " + offeredQuantity
+                    );
+                }
+            } else {
+                throw new IllegalArgumentException("Center 'to' does not have resource" + resourceType);
+            }
+        }
+    }
+
+    private void exchangeResources(CommunityCenter centerFrom, CommunityCenter centerTo, Map<ResourceType, Integer> resourcesOffered, Map<ResourceType, Integer> resourcesRequested) {
         for (ResourceType resourceType : resourcesOffered.keySet()) {
             if (centerTo.getResources().containsKey(resourceType)) {
                 centerTo.getResources().put(resourceType, centerTo.getResources().get(resourceType) + resourcesOffered.get(resourceType));
@@ -61,31 +128,6 @@ public class ResourceExchangeService {
                 centerTo.getResources().put(resourceType, centerTo.getResources().get(resourceType) - resourcesRequested.get(resourceType));
             }
         }
-
-        communityCenterRepository.save(centerFrom);
-        communityCenterRepository.save((centerTo));
-
-        ResourceExchange resourceExchange = new ResourceExchange(
-                resourceExchangeDTO.getCenterFromId(),
-                resourceExchangeDTO.getCenterToId(),
-                resourceExchangeDTO.getResourcesOffered(),
-                resourceExchangeDTO.getResourcesRequested()
-        );
-
-        resourceExchangeRepository.save(resourceExchange);
-        return resourceExchange;
-    }
-
-    private double calcOccupancyPercent(CommunityCenter communityCenter) {
-        return ((double) communityCenter.getOccupancy() / communityCenter.getCapacity() * 100);
-    }
-
-    private int calcPointsExchange(Set<ResourceType> resources) {
-        int points = 0;
-        for (ResourceType resourceType: resources) {
-            points += resourceType.getPoints();
-        }
-        return points;
     }
 
 }
