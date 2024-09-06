@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,13 +17,15 @@ public class ResourceExchange {
     private String centerToId;
     private Map<ResourceType, Integer> resourcesOffered;
     private Map<ResourceType, Integer> resourcesRequested;
-    private int totalPoints;
+    private Instant timestamp;
+
 
     public ResourceExchange(String centerFromId, String centerToId, Map<ResourceType, Integer> resourcesOffered, Map<ResourceType, Integer> resourcesRequested) {
         this.centerFromId = centerFromId;
         this.centerToId = centerToId;
         this.resourcesOffered = resourcesOffered;
         this.resourcesRequested = resourcesRequested;
+        this.timestamp = Instant.now();
     }
 
     public String getCenterFrom() {
@@ -49,11 +52,4 @@ public class ResourceExchange {
         return this.resourcesRequested;
     }
 
-    public int getTotalPoints() {
-        return this.totalPoints;
-    }
-
-    public void setTotalPoints(int totalPoints) {
-        this.totalPoints = totalPoints;
-    }
 }

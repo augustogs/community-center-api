@@ -9,8 +9,11 @@ import com.communitycenters.api.repository.ResourceExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.time.Instant;
 
 @Service
 public class ResourceExchangeService {
@@ -48,6 +51,14 @@ public class ResourceExchangeService {
         );
         resourceExchangeRepository.save(resourceExchange);
         return resourceExchange;
+    }
+
+    public List<ResourceExchange> getExchangesByCenterIdAndDateRange(String centerId) {
+        return resourceExchangeRepository.findExchangesByCenterId(centerId);
+    }
+
+    public List<ResourceExchange> getExchangesByDateRange(Instant startTime, Instant endTime) {
+        return resourceExchangeRepository.findExchangesByDateRange(startTime, endTime);
     }
 
     // Private methods
