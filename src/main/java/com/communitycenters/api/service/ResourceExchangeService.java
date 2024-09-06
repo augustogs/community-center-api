@@ -33,7 +33,7 @@ public class ResourceExchangeService {
         Map<ResourceType, Integer> resourcesRequested = resourceExchangeDTO.getResourcesRequested();
 
         validateExchangeConditions(centerFrom, centerTo, resourcesOffered, resourcesRequested);
-        valideteResourceExchange(centerFrom, centerTo, resourcesOffered, resourcesRequested);
+        validateResourceExchange(centerFrom, centerTo, resourcesOffered, resourcesRequested);
 
         exchangeResources(centerFrom, centerTo, resourcesOffered, resourcesRequested);
 
@@ -75,7 +75,7 @@ public class ResourceExchangeService {
     }
 
 
-    private void valideteResourceExchange(CommunityCenter centerFrom, CommunityCenter centerTo, Map<ResourceType, Integer> resourcesOffered, Map<ResourceType, Integer> resourcesRequested) {
+    private void validateResourceExchange(CommunityCenter centerFrom, CommunityCenter centerTo, Map<ResourceType, Integer> resourcesOffered, Map<ResourceType, Integer> resourcesRequested) {
 
         for (ResourceType resourceType : resourcesOffered.keySet()) {
             if (centerFrom.getResources().containsKey(resourceType)) {

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/community-centers")
 public class CommunityCenterController {
@@ -33,6 +35,11 @@ public class CommunityCenterController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/high-occupancy")
+    public List<CommunityCenter> getCommunityCentersWithHighOccupancy() {
+        return communityCenterService.findCentersWithHighOccupancy();
     }
 
 }

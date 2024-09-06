@@ -4,8 +4,18 @@ import com.communitycenters.api.dto.CommunityCenterDTO;
 import com.communitycenters.api.model.CommunityCenter;
 import com.communitycenters.api.repository.CommunityCenterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+
+
+import java.util.List;
 
 @Service
 public class CommunityCenterService {
@@ -15,6 +25,9 @@ public class CommunityCenterService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Transactional
     public CommunityCenter addCommunityCenter(CommunityCenterDTO center) {
@@ -42,6 +55,20 @@ public class CommunityCenterService {
             notificationService.sendCapacityReachedNotification(communityCenter);
         }
         return communityCenterRepository.save(communityCenter);
+    }
+
+    public List<CommunityCenter> findCentersWithHighOccupancy() {
+        double occupancyThresholdPercentage = 0.9;
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("capacity").gt(0)),
+                Aggregation.project("name", "address", "location", "capacity", "occupancy", "resources")
+                        .andExpression("occupancy / capacity").as("occupancyPercentage"),
+                Aggregation.match(Criteria.where("occupancyPercentage").gt(occupancyThresholdPercentage))
+        );
+
+        AggregationResults<CommunityCenter> results = mongoTemplate.aggregate(aggregation, "community_centers", CommunityCenter.class);
+        return results.getMappedResults();
     }
 
 }
