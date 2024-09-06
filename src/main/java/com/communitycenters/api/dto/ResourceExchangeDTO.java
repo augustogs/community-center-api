@@ -12,6 +12,13 @@ public class ResourceExchangeDTO {
     private Map<ResourceType, Integer> resourcesOffered;
     private Map<ResourceType, Integer> resourcesRequested;
 
+    public ResourceExchangeDTO(String centerFromId, String centerToId, Map<ResourceType, Integer> resourcesOffered, Map<ResourceType, Integer> resourcesRequested) {
+        this.centerFromId = centerFromId;
+        this.centerToId = centerToId;
+        this.resourcesOffered = resourcesOffered;
+        this.resourcesRequested = resourcesRequested;
+    }
+
     public String getCenterFromId() {
         return centerFromId;
     }
@@ -36,5 +43,12 @@ public class ResourceExchangeDTO {
         return resourcesRequested;
     }
 
+    public void setResourcesOffered(Map<ResourceType, Integer> resourcesOffered) {
+        this.resourcesOffered = resourcesOffered;
+    }
+
+    public void setResourcesRequested(Map<ResourceType, Integer> resourcesRequested) {
+        this.resourcesRequested = resourcesRequested;
+    }
 }
 

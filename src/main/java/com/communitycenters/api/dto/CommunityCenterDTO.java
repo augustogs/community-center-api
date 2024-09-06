@@ -42,7 +42,7 @@ public class CommunityCenterDTO {
         return this.capacity;
     }
 
-    public void setMaxCapacity(int capacity) {
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
 
@@ -57,5 +57,6 @@ public class CommunityCenterDTO {
     public Map<ResourceType, Integer> getResources() {
         return this.resources;
     }
+
 
 }

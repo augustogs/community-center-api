@@ -1,4 +1,4 @@
-package com.communitycenters.community_center_api;
+package com.communitycenters.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -46,8 +46,8 @@ public class ResourceExchangeService {
         ResourceExchange resourceExchange = new ResourceExchange(
                 resourceExchangeDTO.getCenterFromId(),
                 resourceExchangeDTO.getCenterToId(),
-                resourceExchangeDTO.getResourcesOffered(),
-                resourceExchangeDTO.getResourcesRequested()
+                centerFrom.getResources(),
+                centerTo.getResources()
         );
         resourceExchangeRepository.save(resourceExchange);
         return resourceExchange;

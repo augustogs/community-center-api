@@ -1,12 +1,10 @@
 package com.communitycenters.api.model;
 
-import jakarta.annotation.Resource;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.Map;
-import java.util.Set;
 
 @Document(collection = "exchanges")
 public class ResourceExchange {
@@ -19,7 +17,6 @@ public class ResourceExchange {
     private Map<ResourceType, Integer> resourcesRequested;
     private Instant timestamp;
 
-
     public ResourceExchange(String centerFromId, String centerToId, Map<ResourceType, Integer> resourcesOffered, Map<ResourceType, Integer> resourcesRequested) {
         this.centerFromId = centerFromId;
         this.centerToId = centerToId;
@@ -28,7 +25,7 @@ public class ResourceExchange {
         this.timestamp = Instant.now();
     }
 
-    public String getCenterFrom() {
+    public String getCenterFromId() {
         return this.centerFromId;
     }
 
@@ -36,7 +33,7 @@ public class ResourceExchange {
         this.centerFromId = this.centerFromId;
     }
 
-    public String getCenterTo() {
+    public String getCenterToId() {
         return this.centerToId;
     }
 
@@ -51,5 +48,5 @@ public class ResourceExchange {
     public Map<ResourceType, Integer> getResourcesRequested() {
         return this.resourcesRequested;
     }
-
+    
 }
